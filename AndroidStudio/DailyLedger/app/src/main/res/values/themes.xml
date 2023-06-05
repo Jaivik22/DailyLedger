@@ -1,0 +1,27 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <style name="Base.Theme.DailyLedger" parent="Theme.Material3.DayNight">
+        <!-- Customize your light theme here -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/my_light_primary</item>
+        <item name="colorPrimaryDark">@color/my_light_primary_dark</item>
+        <item name="colorPrimaryLight">@color/my_light_primary_light</item>
+        <item name="colorPrimaryLighter">@color/my_light_primary_lighter</item>
+        <item name="colorPrimaryDarker">@color/my_light_primary_darker</item>
+
+    </style>
+
+    <!-- Theme with action bar -->
+    <style name="Theme.DailyLedger" parent="Base.Theme.DailyLedger">
+        <item name="windowActionBar">true</item> <!-- Added attribute to enable action bar -->
+        <item name="windowNoTitle">false</item> <!-- Added attribute to show activity titles in action bar -->
+    </style>
+
+    <!-- Theme without action bar -->
+    <style name="Theme.DailyLedger.NoActionBar" parent="Base.Theme.DailyLedger">
+        <item name="windowActionBar">false</item> <!-- Added attribute to disable action bar -->
+        <item name="windowNoTitle">true</item> <!-- Added attribute to hide activity titles -->
+    </style>
+
+</resources>

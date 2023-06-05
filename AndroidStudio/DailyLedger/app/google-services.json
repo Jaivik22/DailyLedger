@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "562268556168",
+    "project_id": "dailyledger-7ad48",
+    "storage_bucket": "dailyledger-7ad48.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562268556168:android:215f362a79bb9a865c083d",
+        "android_client_info": {
+          "package_name": "com.example.dailyledger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "562268556168-99ac5h8fb63dpgrdln29bfm9kf3qbjar.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASYyz4jyIbcqWFc0bwfgcN7fcG6npz154"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "562268556168-99ac5h8fb63dpgrdln29bfm9kf3qbjar.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

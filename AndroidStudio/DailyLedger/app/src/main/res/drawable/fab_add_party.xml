@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#FF4081" /> <!-- Set the desired background color for the FAB -->
+    <corners android:radius="100dp" /> <!-- Set a large value to create an oval shape -->
+</shape>
+

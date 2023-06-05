@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/menuReport"
+            android:icon="@drawable/reporticon"
+            android:title="Report" />
+        <item
+            android:id="@+id/menuItems"
+            android:icon="@drawable/stock_icon"
+            android:title="Items"/>
+        <item android:id="@+id/menuStock"
+            android:icon="@drawable/stockicon"
+            android:title="Stock"/>
+
+    </group>
+
+
+    <group android:checkableBehavior="single">
+        <item android:title="Filter">
+            <menu>
+                <item
+                    android:id="@+id/menuBuy"
+                    android:title="Purchase" />
+                <item
+                    android:id="@+id/menuSell"
+                    android:title="Sell" />
+                <item
+                    android:id="@+id/menuPaymentIn"
+                    android:title="PaymentIn" />
+                <item
+                    android:id="@+id/menuPaymentOut"
+                    android:title="Payment Out"></item>
+            </menu>
+        </item>
+    </group>
+
+
+
+
+    <group android:checkableBehavior="single">
+        <item android:title="">
+        <menu>
+            <item android:title="Logout"
+                android:icon="@drawable/logout"
+                android:id="@+id/logout">
+            </item>
+        </menu>
+        </item>
+    </group>
+</menu>

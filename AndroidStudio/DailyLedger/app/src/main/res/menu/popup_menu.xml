@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_payment_in"
+        android:title="Payment In" />
+    <item
+        android:id="@+id/menu_payment_out"
+        android:title="Payment Out" />
+</menu>

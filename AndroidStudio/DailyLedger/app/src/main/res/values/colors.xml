@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="Green">#00FF00</color>
+    <color name="my_light_primary">#EA3C12</color>
+    <color name="my_light_primary_dark">#C2300C</color> <!-- Darker shade -->
+    <color name="my_light_primary_light">#FF6347</color> <!-- Lighter shade -->
+    <color name="my_light_primary_lighter">#FF8C71</color> <!-- Even lighter shade -->
+    <color name="my_light_primary_darker">#A61E08</color> <!-- Even darker shade -->
+    <!-- Add more shades as needed -->
+    
+    <color name="dark_green">#0cba7b</color>
+    <color name="navy_blue">#000080</color>
+    <color name="orange">#FFA500</color>
+    <color name="dark_red">#8B0000</color>
+</resources>
