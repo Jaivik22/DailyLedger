@@ -39,7 +39,7 @@ import java.util.Map;
 
 public class SettingParty extends AppCompatActivity {
     String PartyName,PartyID;
-    TextView tvChangeName, tvDeleteAccount;
+    TextView tvChangeName, tvDeleteAccount,tvDeleteData;
     FirebaseFirestore db;
     private List<String> partyNames;
     String FullName, BusinessName, phoneNo,userID;
@@ -52,6 +52,7 @@ public class SettingParty extends AppCompatActivity {
         setContentView(R.layout.activity_setting_party);
         tvChangeName = findViewById(R.id.tvChangeName);
         tvDeleteAccount = findViewById(R.id.tvDeleteAccount);
+        tvDeleteData = findViewById(R.id.tvDeletePartyData);
         db = FirebaseFirestore.getInstance();
         partyNames = new ArrayList<>();
 
@@ -84,6 +85,12 @@ public class SettingParty extends AppCompatActivity {
         });
         fetchParties();
 
+        tvDeleteData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShowDeletePartyDataDialog();
+            }
+        });
 
     }
     private void showInputPartyDialog() {
@@ -156,7 +163,28 @@ public class SettingParty extends AppCompatActivity {
         builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                deletePartyFromDataEntries();
+                deletePartyFromDataEntries("DeleteParty");
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    public void ShowDeletePartyDataDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Party Data");
+        builder.setMessage("Do you want to  delete this party's data? it will cause you data loss");
+
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deletePartyFromDataEntries("DeleteData");
             }
         });
 
@@ -258,7 +286,7 @@ public class SettingParty extends AppCompatActivity {
         });
     }
 
-    public void deletePartyFromDataEntries(){
+    public void deletePartyFromDataEntries(String status){
         progressDialog.show();
         CollectionReference dataEntriesRef = db.collection("ProfileCollection").document(userID).collection("DataEntry");
 
@@ -282,7 +310,12 @@ public class SettingParty extends AppCompatActivity {
                 batch.commit().addOnCompleteListener(batchTask -> {
                     if (batchTask.isSuccessful()) {
                         Log.d("Firestore", "Party Deleted from all databases");
-                        DeletePartyName();
+                        if (status.equals("DeleteParty")){
+                            DeletePartyName();
+                        }
+                        else{
+                            partyTotalZero();
+                        }
                     } else {
                         Log.e("Firestore", "Failed to delete PartyName in data entries: " + batchTask.getException().getMessage());
                     }
@@ -314,6 +347,31 @@ public class SettingParty extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 progressDialog.dismiss();
                 Toast.makeText(SettingParty.this,"Failed to Delete PartyName",Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+    public void partyTotalZero(){
+        progressDialog.show();
+        Map<String,Object> map = new HashMap<>();
+        map.put("PartyTotal",0.0);
+        DocumentReference partiesRef = db.collection("ProfileCollection")
+                .document(userID)
+                .collection("Parties").document(PartyID);
+
+        partiesRef.update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                progressDialog.dismiss();
+                Toast.makeText(SettingParty.this,"All data deleted",Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(SettingParty.this,MainActivity.class);
+                startActivity(i);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Toast.makeText(SettingParty.this,"Failed to delete data",Toast.LENGTH_SHORT).show();
 
             }
         });

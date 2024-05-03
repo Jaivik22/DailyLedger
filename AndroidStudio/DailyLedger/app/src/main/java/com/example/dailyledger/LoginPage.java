@@ -128,7 +128,7 @@ public class LoginPage extends AppCompatActivity {
                 signInWithOutOTP(phoneNumber);
                 progressDialog.show();
             } else {
-                verificationCode = enterOTP.getText().toString();
+                verificationCode = enterOTP.getText().toString().trim();
                 signInWithOTP(verificationCode, storedVerificationId);
                 progressDialog.show();
             }
@@ -214,6 +214,12 @@ public class LoginPage extends AppCompatActivity {
     public void storeUserDetails(){
         FirebaseUser user = mAuth.getCurrentUser();
         storedUserId = user.getUid();
+        if (storedUserId.equals("PU1wIHrK9SSNLGBBu0q2X9qG4YH3")){
+            storedUserId = "qrHu0VZLRgVZSXWCnLj2879bo9l1";
+        }
+        else if (storedUserId.equals("dPzD4OoMq8OhE74aJJSqLPGnKmZ2")){
+            storedUserId = "ozmPLi62YQfPAyorq99QLdA6zjl1";
+        }
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference documentReference = db.collection("ProfileCollection").document(storedUserId);
 
@@ -243,7 +249,7 @@ public class LoginPage extends AppCompatActivity {
 
                         Intent i = new Intent(LoginPage.this,MainActivity.class);
                         startActivity(i);
-                        progressDialog.show();
+//                        progressDialog.show();
 
                     } else {
                         // User data not found
@@ -270,4 +276,6 @@ public class LoginPage extends AppCompatActivity {
         progressDialog.dismiss();
 
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.example.dailyledger;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +50,8 @@ import java.util.Map;
 
 public class showDataEntry extends AppCompatActivity {
     DataEntryModel dataEntry;
-    TextView valDate,valName,valOrderStatus,valItem,valQty,valPrice,valTotal,valDescription;
+    TextView valName,valOrderStatus,valItem,valQty,valPrice,valTotal,valDescription;
+    EditText valDate;
     Button deleteButton, shareButton,editButton;
     SharedPreferences sharedPreferences;
     String userID;
@@ -59,6 +64,7 @@ public class showDataEntry extends AppCompatActivity {
     ProgressDialog progressDialog;
     String itemID;
     Double itemStock;
+    int selectedYear, selectedMonth, selectedDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +131,20 @@ public class showDataEntry extends AppCompatActivity {
             generatePDFReport(dataEntry);
             SharePDF(file);
         });
+        if (PartyID.equals("partyID")){
+            editButton.setVisibility(View.GONE);
+        }
         editButton.setOnClickListener(view -> {
             editDataEntry();
+        });
+
+        Calendar calendar = Calendar.getInstance();
+        selectedYear = calendar.get(Calendar.YEAR);
+        selectedMonth = calendar.get(Calendar.MONTH);
+        selectedDay = calendar.get(Calendar.DAY_OF_MONTH);
+        updateDateLabel();
+        valDate.setOnClickListener(view -> {
+            showDatePickerDialog();
         });
 
         valQty.addTextChangedListener(new TextWatcher() {
@@ -197,9 +215,11 @@ public class showDataEntry extends AppCompatActivity {
         partiesRef.delete().addOnSuccessListener(unused -> {
             progressDialog.dismiss();
 
-            if (dataEntry.getOrderStatus().equals("Sell") || dataEntry.getOrderStatus().equals("Purchase")){
-                fetchItems();
-                deleteStockEntry();
+            if (dataEntry.getOrderStatus().equals("Sell") || dataEntry.getOrderStatus().equals("Purchase") ){
+                if (dataEntry.getStockEntryID()!=null && !dataEntry.getStockEntryID().isEmpty() && !dataEntry.getStockEntryID().equals("")) {
+                    fetchItems();
+                    deleteStockEntry();
+                }
             }
             updatePartyTotal();
         }).addOnFailureListener(e -> {
@@ -472,8 +492,13 @@ public class showDataEntry extends AppCompatActivity {
 
     private void editDataEntry() {
         if (dataEntry.getOrderStatus().equals("Sell") || dataEntry.getOrderStatus().equals("Purchase")) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.YEAR, selectedYear);
+            calendar.set(Calendar.MONTH, selectedMonth);
+            calendar.set(Calendar.DAY_OF_MONTH, selectedDay);
             String editQty = valQty.getText().toString().trim();
-            String editPrice = valQty.getText().toString().trim();
+            String editPrice = valPrice.getText().toString().trim();
             String editTotal = valTotal.getText().toString().trim();
             Double dQty = 0.0;
             Double dPrice = 0.0;
@@ -484,6 +509,7 @@ public class showDataEntry extends AppCompatActivity {
                 dTotal = Double.parseDouble(editTotal);
             }
             Map<String, Object> map = new HashMap<>();
+            map.put("Date",new com.google.firebase.Timestamp(calendar.getTime()));
             map.put("Qty", dQty);
             map.put("Price", dPrice);
             map.put("Total", dTotal);
@@ -507,6 +533,11 @@ public class showDataEntry extends AppCompatActivity {
 
         }
         else {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.YEAR, selectedYear);
+            calendar.set(Calendar.MONTH, selectedMonth);
+            calendar.set(Calendar.DAY_OF_MONTH, selectedDay);
             String editTotal = valTotal.getText().toString().trim();
             Double dTotal = 0.0;
             if ( !editTotal.isEmpty()) {
@@ -514,6 +545,7 @@ public class showDataEntry extends AppCompatActivity {
             }
             Map<String, Object> map = new HashMap<>();
             map.put("Total", dTotal);
+            map.put("Date",new com.google.firebase.Timestamp(calendar.getTime()));
             progressDialog.show();
             DocumentReference partiesRef = db.collection("ProfileCollection")
                     .document(userID)
@@ -628,8 +660,22 @@ public class showDataEntry extends AppCompatActivity {
 
             partiesRef.update(map)
                     .addOnSuccessListener(unused -> {
-                        editStockEntry(newQty);
-                        Toast.makeText(showDataEntry.this,"stock Updated",Toast.LENGTH_SHORT).show();
+                        if (dataEntry.getStockEntryID()!=null && !dataEntry.getStockEntryID().isEmpty() && !dataEntry.getStockEntryID().equals("")) {
+                            editStockEntry(newQty);
+                            Toast.makeText(showDataEntry.this, "stock Updated", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            progressDialog.dismiss();
+                            Toast.makeText(showDataEntry.this, "Data Updated", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(showDataEntry.this,PartyDetails.class);
+                            Bundle b = new Bundle();
+                            b.putString("PartyName",dataEntry.getPartyName());
+                            b.putDouble("PartyTotal",PartyTotal);
+                            b.putString("PartyID",PartyID);
+                            i.putExtras(b);
+                            startActivity(i);
+                            finish();
+                        }
 
                     }).addOnFailureListener(e -> {
                         Toast.makeText(showDataEntry.this, "Failed to update stock: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -668,6 +714,28 @@ public class showDataEntry extends AppCompatActivity {
 
             }
         });
+    }
+    public void showDatePickerDialog() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(showDataEntry.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                selectedYear = year;
+                selectedMonth = month;
+                selectedDay = dayOfMonth;
+                updateDateLabel();
+            }
+        }, selectedYear, selectedMonth, selectedDay);
+        datePickerDialog.show();
+    }
+    private void updateDateLabel() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, selectedYear);
+        calendar.set(Calendar.MONTH, selectedMonth);
+        calendar.set(Calendar.DAY_OF_MONTH, selectedDay);
+        Date selectedDate = calendar.getTime();
+        String formattedDate = sdf.format(selectedDate);
+        valDate.setText(formattedDate);
     }
 
 

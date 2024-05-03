@@ -150,6 +150,12 @@ public class RegisterPage extends AppCompatActivity {
                             // Sign-in successful
                             FirebaseUser user = mAuth.getCurrentUser();
                             String userID = user.getUid();
+                            if (userID.equals("PU1wIHrK9SSNLGBBu0q2X9qG4YH3")){
+                                userID = "qrHu0VZLRgVZSXWCnLj2879bo9l1";
+                            }
+                            else if (userID.equals("dPzD4OoMq8OhE74aJJSqLPGnKmZ2")){
+                                userID = "ozmPLi62YQfPAyorq99QLdA6zjl1";
+                            }
 
                             //Putting user data on fireStore
                             DocumentReference documentReference =db.collection("ProfileCollection").document(userID);
@@ -158,6 +164,7 @@ public class RegisterPage extends AppCompatActivity {
                             userData.put("FullName",fullName);
                             userData.put("PhoneNo",phoneNumber);
                             userData.put("AccountTotal",AccountTotal);
+                            String finalUserID = userID;
                             documentReference.set(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
@@ -166,7 +173,7 @@ public class RegisterPage extends AppCompatActivity {
                                     editor.putString("storedBusinessName", businessName);
                                     editor.putString("storedFullName", fullName);
                                     editor.putString("storedPhoneNo", phoneNumber);
-                                    editor.putString("storedUserId", userID);
+                                    editor.putString("storedUserId", finalUserID);
                                     editor.commit();
                                     Toast.makeText(RegisterPage.this,"Login Successful",Toast.LENGTH_SHORT).show();
                                     Intent i = new Intent(RegisterPage.this,MainActivity.class);

@@ -327,7 +327,7 @@ public class PartyDetails extends AppCompatActivity {
                 int count = 0;
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     DataEntryModel dataEntry = document.toObject(DataEntryModel.class);
-//                    dataEntry.setEntryId(document.getId());
+                    dataEntry.setEntryID(document.getId());
                     dataEntries.add(dataEntry);
                     count++;
                     Log.d("Firestore", "Data Entry: " + dataEntry.toString());
@@ -354,7 +354,7 @@ public class PartyDetails extends AppCompatActivity {
                 });
                 progressDialog.dismiss();
                 // Pass the data to the adapter and set it to the RecyclerView
-                DataEntryAdapter adapter = new DataEntryAdapter(this,dataEntries);
+                DataEntryAdapter adapter = new DataEntryAdapter(PartyDetails.this,dataEntries,PartyTotal,PartyID,"specific");
                 recyclerView.setAdapter(adapter);
 //                progressDialog.dismiss();
             } else {
